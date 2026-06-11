@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="fi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lohkokirja</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Lohkokirja <span class="muted">— kausi taskussasi</span></h1>
+      <p class="muted" data-testid="crop-year">Satovuosi 2026 · demotila · kuvitteellista dataa</p>
+    </header>
+
+    <main>
+      <aside>
+        <h2>Lohkot</h2>
+        <ul id="field-list" data-testid="field-list"></ul>
+      </aside>
+
+      <section id="detail" data-testid="field-detail" hidden>
+        <div class="detail-head">
+          <h2 id="field-name" data-testid="field-name"></h2>
+          <p id="field-meta" class="muted" data-testid="field-meta"></p>
+        </div>
+
+        <div class="panel">
+          <h3>Ravinnetilanne <span class="muted">(käytetty / raja, kg/ha)</span></h3>
+          <div id="nutrient-bars" data-testid="nutrient-status"></div>
+          <p id="harvest-note" class="note" data-testid="harvest-note" hidden></p>
+        </div>
+
+        <div class="panel">
+          <h3>Toimenpiteet</h3>
+          <ol id="timeline" data-testid="timeline"></ol>
+        </div>
+
+        <div class="panel">
+          <h3>Kirjaa toimenpide</h3>
+          <form id="op-form" data-testid="op-form">
+            <label>
+              Tyyppi
+              <select id="op-type" name="tyyppi" data-testid="op-type">
+                <option value="lannoitus">Lannoitus</option>
+                <option value="ruiskutus">Ruiskutus</option>
+                <option value="kylvo">Kylvö</option>
+              </select>
+            </label>
+            <label>
+              Päivämäärä
+              <input type="date" name="pvm" value="2026-06-15" required data-testid="op-date" />
+            </label>
+
+            <fieldset data-op-type="lannoitus">
+              <label>
+                Tuote
+                <input name="lannoite" value="NPK 20-3-8" required data-testid="fert-product" />
+              </label>
+              <label>
+                Määrä (kg/ha)
+                <input
+                  type="number"
+                  name="maaraKgPerHa"
+                  min="1"
+                  step="any"
+                  value="100"
+                  required
+                  data-testid="fert-amount"
+                />
+              </label>
+              <div class="row">
+                <label
+                  >N %
+                  <input type="number" name="nPct" min="0" max="100" step="any" value="20" required
+                /></label>
+                <label
+                  >P %
+                  <input type="number" name="pPct" min="0" max="100" step="any" value="3" required
+                /></label>
+                <label
+                  >K %
+                  <input type="number" name="kPct" min="0" max="100" step="any" value="8" required
+                /></label>
+              </div>
+            </fieldset>
+
+            <fieldset data-op-type="ruiskutus" hidden>
+              <label>
+                Tuote
+                <select name="kasvinsuojeluaine" data-testid="spray-product"></select>
+              </label>
+              <label>
+                Havaittu BBCH-kasvuaste
+                <input
+                  type="number"
+                  name="bbchAste"
+                  min="0"
+                  max="99"
+                  value="30"
+                  required
+                  data-testid="spray-bbch"
+                />
+              </label>
+            </fieldset>
+
+            <fieldset data-op-type="kylvo" hidden>
+              <label>
+                Kasvi
+                <select name="kasvi" data-testid="sow-crop"></select>
+              </label>
+              <label>
+                Lajike
+                <input name="lajike" value="Trekker" required />
+              </label>
+              <label>
+                Siementyyppi
+                <select name="siementyyppi">
+                  <option value="sertifioitu">Sertifioitu</option>
+                  <option value="tilan-oma">Tilan oma</option>
+                  <option value="muu">Muu</option>
+                </select>
+              </label>
+              <label>
+                Kylvömäärä (kg/ha)
+                <input
+                  type="number"
+                  name="kylvomaaraKgPerHa"
+                  min="1"
+                  step="any"
+                  value="220"
+                  required
+                />
+              </label>
+            </fieldset>
+
+            <button type="submit" data-testid="op-submit">Tallenna toimenpide</button>
+          </form>
+          <p id="form-feedback" data-testid="form-feedback" hidden></p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="muted">
+      Lohkokirja-harjoitusalusta · kaikki rajat ja tuotteet ovat kuvitteellisia, eivät
+      viljelyohjeita
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>

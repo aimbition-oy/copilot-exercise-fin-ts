@@ -1,0 +1,42 @@
+{
+  "name": "lohkokirja",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Lohkokirja — harjoitusalusta GitHub Copilot -valjastusharjoituksiin",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "tsx src/server.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.20.0",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.0",
+    "@types/supertest": "^6.0.2",
+    "eslint": "^9.20.0",
+    "eslint-config-prettier": "^10.0.0",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.0",
+    "supertest": "^7.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "typescript-eslint": "^8.22.0",
+    "vitest": "^3.0.0"
+  }
+}
