@@ -16,8 +16,10 @@ lomassa [PRD.md](PRD.md):n tehtävillä. Harjoitukset ovat tiedostossa
 
 ## Pikastartti
 
+Tarvitset Node 20:n tai uudemman (tarkista: `node --version`). nvm-käyttäjille
+repossa on `.nvmrc` (`nvm use`), muille riittää mikä tahansa tuore asennus.
+
 ```bash
-nvm use          # Node 20
 npm install
 npm test         # 33 testiä vihreänä
 npm run dev      # http://localhost:3000
