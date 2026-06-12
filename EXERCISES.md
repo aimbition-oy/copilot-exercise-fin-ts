@@ -5,7 +5,7 @@ ympärille rakennat agenttityöskentelyn valjaat (engl. harness): ohjeet, agenti
 hookit, skillit ja MCP-palvelimet. Sovellusta laajennetaan pienin askelin pitkin
 matkaa, ja lopussa annat valjastetun agentin toteuttaa kokonaisen ominaisuuden.
 
-**Kesto:** noin 3 h (harjoitukset 0-6). Nopeille on extra lopussa.
+**Kesto:** noin 3 h (harjoitukset 0-6). Nopeille on extrat lopussa.
 
 ## Pelisäännöt
 
@@ -314,3 +314,35 @@ riittää? Mihin kohtiin hyväksyntäpisteet kuuluvat?
   painamalla Toteuttajalle.
 - Agenttikohtainen hooki: audit-loki vain Toteuttajalle (`hooks`-kenttä
   agenttimäärityksessä, vaatii asetuksen `chat.useCustomAgentHooks`).
+
+---
+
+## Bonus - Agents-ikkuna
+
+**Tavoite:** Tutustu VS Coden Agents-ikkunaan: agenttivetoiseen näkymään,
+jossa sessiot, muutokset ja kustomoinnit ovat etusijalla ja editori
+sivuroolissa.
+
+**Dokumentaatio:** <https://code.visualstudio.com/docs/agents/agents-window>
+
+**Huom:** Agents-ikkuna vaatii VS Coden uusimman version. Päivitä ensin:
+Code > Check for Updates.
+
+**Vaiheet**
+
+1. Avaa Agents-ikkuna ja kierrä dokumentaation opastuksella näkymän osat:
+   sessiolista, chat, Changes-paneeli ja Customizations-paneeli.
+2. Customizations-paneelista löydät kaikki päivän aikana rakentamasi osat
+   yhdestä paikasta: ohjeet, agentit, skillit, hookit ja MCP-palvelimet.
+3. Halutessasi: aloita uusi sessio ja anna agentille toteutettavaksi F2, F3
+   tai F4. Käytä Suunnittelijaa ja Toteuttajaa tästä näkymästä.
+4. Seuraa työtä Changes-paneelista: diffit, kommentointi (Add Feedback) ja
+   testien ajo Tasks-valikosta (`npm test`).
+5. Kokeile rinnakkaisia sessioita: käynnistä toinen sessio toiselle
+   tehtävälle ja vertaa, miltä monen agentin seuraaminen tuntuu.
+
+**Todenna:** Vapaamuotoinen tutustuminen riittää. Jos toteutit ominaisuuden,
+testit vihreiksi kuten aiemmin.
+
+**Pohdittavaa:** Mikä muuttuu, kun editori ei ole enää työn keskipiste?
+Missä kohdissa haluat yhä tavallisen editorinäkymän?
