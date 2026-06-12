@@ -1,169 +1,206 @@
-# Lohkokirja — Copilot-harnessharjoitukset
+# Lohkokirja - Copilot-harjoitukset
 
-Näiden harjoitusten pohjantähti **ei ole sovelluskoodi** — se on valmis ja
-jäädytetty. Rakennat sen ympärille _harnessin_: ohjeet, agentit, hookit, skillit
-ja MCP-kytkennät, jotka tekevät agenttityöskentelystä ennustettavaa ja
-ohjattavaa. Lopuksi annat rakentamasi valjaikon toteuttaa oikean ominaisuuden.
+Harjoitusten pääpaino ei ole sovelluskoodissa. Koodi on valmis pohja, jonka
+ympärille rakennat agenttityöskentelyn valjaat (engl. harness): ohjeet, agentit,
+hookit, skillit ja MCP-palvelimet. Sovellusta laajennetaan pienin askelin pitkin
+matkaa, ja lopussa annat valjastetun agentin toteuttaa kokonaisen ominaisuuden.
 
-**Kesto:** ~3 h (harjoitukset 0–6). Nopeille on extroja lopussa.
+**Kesto:** noin 3 h (harjoitukset 0-6). Nopeille on extra lopussa.
 
 ## Pelisäännöt
 
-1. **Skaffoldaa, älä käsinkirjoita.** Jokaisessa harjoituksessa on linkki
-   viralliseen dokumentaatioon. Anna linkki Copilotille ja pyydä sitä
-   generoimaan tiedoston runko — sinun työsi on _suunnittelupäätökset_, ei
-   YAML-syntaksi.
-2. **Tokenitalous kulkee mukana.** Aina kun luot agentin, frontmatterin
-   `model`-kenttä on päätös, joka maksaa (tai säästää) rahaa. Kirjaa jokaiseen
-   agenttiin yhden rivin kommentti: _miksi tämä malli tälle roolille?_
+1. **Anna Copilotin tehdä rungot.** Jokaisessa harjoituksessa on linkki
+   viralliseen dokumentaatioon. Anna linkki chatille ja pyydä tiedoston runko.
+   Sinä teet suunnittelupäätökset ja karsit tuloksen.
+2. **Osoita konteksti täsmällisesti.** Käytä #-viittauksia (`#file`, `#folder`,
+   `#selection`, `#codebase`, `#fetch`), Add Context -nappia tai vedä tiedostot
+   suoraan chattiin. Maalaa koodinpätkä editorissa ja kirjoita `#selection`,
+   kun tarkoitat juuri sitä. Ohje:
+   <https://code.visualstudio.com/docs/chat/copilot-chat-context>
 3. **Sovellus pysyy vihreänä.** `npm test` ja `npm run lint` ovat tuomareita.
-   Jos ne hajoavat harnessia rakentaessa, jokin on pielessä.
-4. **Tutkija auttaa.** Repoon on valmiiksi asennettu `Tutkija`-agentti
-   (`.github/agents/tutkija.agent.md`). Käytä sitä, kun haluat selvittää, miten
-   jokin toimii — se on samalla mallikappale siitä, mitä olet itse rakentamassa.
+4. **Apua saa.** Repossa on valmiina kaksi agenttia: `Rasmus` (kouluttajan
+   avatar, tuntee dokumentaation ja harjoitukset) ja `Tutkija` (tutkii
+   koodikantaa ja raportoi). Kysy niiltä ennen kuin jäät jumiin.
 
 ---
 
-## Harjoitus 0 — Käyttöönotto ja savutesti (10 min)
+## Harjoitus 0 - Käyttöönotto (10 min)
 
-**Tavoite:** Sovellus pyörii, testit ovat vihreät ja tunnet valmiin harnessin osat.
+**Tavoite:** Sovellus pyörii ja tiedät, mitä repossa on valmiina.
 
-**Rakenna**
+**Vaiheet**
 
-1. `npm install && npm test` — 33 testiä vihreänä.
-2. `npm run dev` → avaa http://localhost:3000 ja klikkaile lohkoja.
-3. Avaa Copilot Chat, vaihda **Agent**-tilaan ja kokeile agenttivalitsinta:
-   sieltä löytyy `Tutkija`.
-4. Pyydä Tutkijalta: _"Selvitä normaali-syvyydellä: miten ravinnerajasääntö
-   toimii ja missä se on toteutettu?"_
-5. Silmäile valmis harness: `.github/copilot-instructions.md`,
-   `.github/instructions/backend.instructions.md`, `.github/agents/tutkija.agent.md`.
+1. `npm install && npm test`. Tulos: 33 testiä vihreänä.
+2. `npm run dev` ja avaa <http://localhost:3000>. Klikkaile lohkoja.
+3. Avaa Copilot Chat (Ctrl+Alt+I, Macissa Ctrl+Cmd+I) ja valitse **Agent**-tila.
+4. Agenttivalitsimesta löytyvät `Rasmus` ja `Tutkija`. Kysy Rasmukselta:
+   "Mitä .github-kansiossa on valmiina ja mitä minä rakennan itse?"
+5. Pyydä Tutkijalta: "Selvitä normaali-syvyydellä, miten ravinnerajasääntö
+   toimii ja missä se on toteutettu."
+6. Tutustu valmiisiin osiin: ohjeet (`.github/copilot-instructions.md` ja
+   `.github/instructions/backend.instructions.md`) sekä agenttimääritykset
+   (`.github/agents/`).
 
-**Todenna:** Tutkija vastaa tiedostoviittauksin (esim. `ravinneService.ts`) eikä
-yritä muokata mitään.
+**Todenna:** Tutkija vastaa tiedostoviittauksin (esim. `ravinneService.ts`)
+eikä muokkaa mitään.
 
 **Pohdittavaa:** Mitä kontekstia Copilot sai automaattisesti jo ennen kuin
-kirjoitit mitään? Mistä tiedät?
+kirjoitit mitään? Mistä näet sen? (Vihje: vastauksen References-lista.)
 
 ---
 
-## Harjoitus 1 — Ohjeistuskerros (20 min)
+## Harjoitus 1 - Ohjeet (25 min)
 
-**Tavoite:** Täydennä kaksitasoinen ohjeistus: repo-laajuinen
-`copilot-instructions.md` on jo olemassa, samoin yksi rajattu
-`*.instructions.md` (backend). Sinä kirjoitat puuttuvat.
+**Tavoite:** Kaksi uutta rajattua ohjetiedostoa: testit ja frontend.
+Repo-laajuinen `copilot-instructions.md` ja backendin ohje ovat jo olemassa.
 
 **Dokumentaatio:** <https://code.visualstudio.com/docs/agent-customization/custom-instructions>
 
-**Rakenna**
+**Vaiheet**
 
-1. Lue `.github/instructions/backend.instructions.md` malliksi — huomaa
-   `applyTo`-frontmatter.
-2. Luo `testing.instructions.md` (`applyTo: 'tests/**'`): miten testit tässä
-   repossa kirjoitetaan (seedaus, determinismi, supertest-tyyli…). Anna
-   Copilotille dokumentaatiolinkki + testitiedostot ja pyydä luonnos — **karsi
-   sitten itse**: jokainen väite, joka ei päde universaalisti, pois.
-3. Luo `frontend.instructions.md` (`applyTo: 'public/**'`): vanilla JS,
-   `data-testid`-vaatimus, ei frameworkeja.
+1. Lue `.github/instructions/backend.instructions.md` malliksi. Huomaa
+   frontmatter-kentät `name`, `description` ja `applyTo`.
+2. Sparraa sisältö Copilotin kanssa. Lisää konteksti: kirjoita chattiin
+   `#folder` ja valitse `tests` (tai vedä kansio chattiin) ja kysy:
+   "Mitä konventioita näissä testeissä on? Listaa vain asiat, jotka pätevät
+   jokaiseen tiedostoon." Karsi listasta itse pois kaikki, mikä ei päde aina.
+3. Luo tiedosto: aja chatissa `/create-instruction` tai luo käsin
+   `.github/instructions/testing.instructions.md`, frontmatteriin
+   `applyTo: 'tests/**'`.
+4. Liitä karsittu lista tiedostoon. Lyhyt on hyvä: alle 30 riviä riittää.
+5. Toista frontendille: konteksti `#folder public`, tiedosto
+   `.github/instructions/frontend.instructions.md`, `applyTo: 'public/**'`.
+   Ytimessä: vanilla JS, ei frameworkeja, näkyvillä elementeillä `data-testid`.
 
-**Todenna:** Pyydä agenttia kirjoittamaan uusi testi
-(`ravinneService`: esim. raja täsmälleen 100 %). Tarkista chatin
-viiteluettelosta (References), että `testing.instructions.md` latautui — ja että
-testi noudattaa konventioitasi.
+**Todenna:** Pyydä agenttia kirjoittamaan uusi testi `ravinneService`lle
+(esim. raja tasan 100 %). Tarkista vastauksen References-listasta, että
+`testing.instructions.md` latautui, ja että testi noudattaa konventioitasi.
+
+**Pikatehtävä:** Toteuta PRD:n pientehtävä **P1** (lohkokortit näyttävät
+kasvin nimen) Agent-tilassa. Frontend-ohjeesi ohjaa nyt työtä.
 
 **Pohdittavaa:** Mikä kuuluu `copilot-instructions.md`:hen, mikä rajattuun
 tiedostoon, mikä READMEen? Miksi väärä väite ohjeessa on pahempi kuin puuttuva?
 
 ---
 
-## Harjoitus 2 — Suunnittelija-agentti (25 min)
+## Harjoitus 2 - Suunnittelija-agentti (25 min)
 
-**Tavoite:** Ensimmäinen oma agenttisi: _Suunnittelija_, joka lukee `PRD.md`:n
-ja tuottaa toteutuskelpoisen, yhden kontekstin kokoisen tiketin. Vain luku.
+Työnkulku, johon loppupäivä nojaa: **Tutki -> Suunnittele -> Toteuta**.
+Kallis ajattelu tehdään ennen koodia. Tutkija on jo olemassa. Nyt rakennat
+ketjun keskimmäisen osan.
 
 **Dokumentaatio:** <https://code.visualstudio.com/docs/agent-customization/custom-agents>
 
-**Rakenna**
+**Vaiheet**
 
-1. Anna Copilotille dokumentaatiolinkki ja pyydä generoimaan
-   `.github/agents/suunnittelija.agent.md` -runko.
-2. Suunnittelupäätökset (nämä ovat harjoituksen ydin):
-   - `tools`: vain luku ja haku — miksi ei `edit`/`terminal`?
-   - `model`: suunnittelu on ajattelutyötä — valitse kalliimpi malli ja kirjaa
-     yhden rivin kustannusperustelu.
-   - Protokolla runkoon: tiketin muoto = tavoite, kosketettavat tiedostot,
-     hyväksymiskriteerit (Oletetaan/Kun/Niin), rajaukset (_mitä EI tehdä_),
-     testisuunnitelma.
-3. Tiketin on mahduttava yhteen agenttikontekstiin: ohjeista agentti
-   viittaamaan tiedostoihin polkuina, ei kopioimaan sisältöä.
+1. Generoi runko: aja chatissa `/create-agent` tai anna dokumentaatiolinkki ja
+   pyydä `.github/agents/suunnittelija.agent.md`.
+2. Päätä frontmatter:
+   - `tools: [read, search, edit]`. Edit on mukana vain siksi, että tiketti
+     kirjoitetaan tiedostoon. Ei terminaalia.
+   - `model`: suunnittelu on ajattelutyötä, valitse vahva malli.
+3. Kirjoita protokolla tiedoston runko-osaan:
+   - Lue PRD:n tehtävä ja Tutkijan raportti, jos sellainen annetaan.
+   - Kirjoita tiketti tiedostoon `tasks/<tunnus>.md`. Ei muita
+     tiedostomuutoksia.
+   - Tiketin muoto: tavoite, kosketettavat tiedostot, hyväksymiskriteerit
+     (Oletetaan/Kun/Niin), rajaukset (mitä EI tehdä), testisuunnitelma.
+4. Aja ketju kevyesti läpi: pyydä Tutkijalta pikaselvitys "mitkä tiedostot
+   liittyvät toimenpiteiden listaukseen", anna raportti Suunnittelijalle ja
+   pyydä tiketti PRD:n pientehtävästä **P2**.
 
-**Todenna:** Valitse Suunnittelija valitsimesta ja pyydä tiketti ominaisuudesta
-**F1 — Sadonkorjuun kirjaus**. Agentti ei saa yrittää muokata tiedostoja, ja
-tiketin pitää nimetä oikeat kerrokset (malli → service → reitti → testit → UI).
-Talleta tiketti talteen — tarvitset sitä harjoituksessa 6.
+**Todenna:** `tasks/`-kansiossa on tiketti, joka nimeää oikeat kerrokset
+(malli -> service -> reitti -> testit). Suunnittelija ei koskenut muihin
+tiedostoihin.
 
-**Pohdittavaa:** GitHubin laskutuksessa premium-pyynnöt kertautuvat mallin
-hinnalla. Milloin kallis malli maksaa itsensä takaisin — ja missä kohtaa
-työnkulkua se on hukkaa?
+**Pikatehtävä:** Anna tiketti oletusagentille ja toteuta **P2**. Aja `npm test`.
+
+**Pohdittavaa:** Copilot laskuttaa mallit tokeneina: syöte-, tuloste- ja
+välimuistitokenit hinnoitellaan mallikohtaisesti, ja edullisimmat mallit
+maksavat noin viidesosan kalleimmista
+(<https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing>).
+Tiketti on muutama tuhat tokenia, toteutus kymmeniä tuhansia. Missä kohtaa
+ketjua vahva malli maksaa itsensä takaisin?
+
+Huomaa myös: Suunnittelijan "vain tasks/-kansioon" on pelkkä ohje, ei tae.
+Harjoituksessa 3 rakennat takeen.
 
 ---
 
-## Harjoitus 3 — Hookit (25 min)
+## Harjoitus 3 - Hookit (25 min)
 
-**Tavoite:** Kaksi hookia: deterministinen portinvartija ja laatuautomaatio.
-Ohje on toive — hooki on tae.
+**Tavoite:** Portinvartija ja laatuautomaatio. Ohje on toive, hooki on tae.
 
 **Dokumentaatio:** <https://code.visualstudio.com/docs/agent-customization/hooks>
 
-**Rakenna**
+**Vaiheet**
 
-1. Luo `.github/hooks/`-hakemisto. Anna Copilotille dokumentaatiolinkki ja
-   pyydä generoimaan:
-2. **Portinvartija** (`PreToolUse`): skripti, joka lukee työkalukutsun stdinistä
-   ja palauttaa `permissionDecision`-päätöksen:
-   - `deny`: tuhoavat komennot (`rm -rf`, `git push --force`, `npm uninstall`…)
+1. Luo kansio `.github/hooks/`. Anna dokumentaatiolinkki Copilotille ja pyydä
+   hook-määritys (JSON) ja skriptit valmiiksi.
+2. **Portinvartija** (`PreToolUse`): skripti lukee työkalukutsun stdinistä ja
+   palauttaa `permissionDecision`-päätöksen:
+   - `deny`: tuhoavat komennot (`rm -rf`, `git push --force`, `npm uninstall`)
    - `ask`: `npm install` (uusi riippuvuus vaatii ihmisen)
    - `allow`: kaikki muu.
 3. **Laatuautomaatio** (`PostToolUse`): kun agentti muokkaa tiedostoa, aja
-   `npx prettier --write` muokatulle tiedostolle.
+   `npx prettier --write` muokatulle tiedostolle. Prettier on jo
+   devDependency, joten npx käyttää paikallista asennusta.
+4. **Globaali hooki:** sama mekanismi toimii myös käyttäjätasolla, jolloin
+   hooki pätee kaikissa repoissasi. Luo `~/.copilot/hooks`-kansioon
+   `SessionStart`-hooki, joka kirjaa session alun lokitiedostoon. Vertaa:
+   workspace-hooki kulkee repon mukana koko tiimille, käyttäjätason hooki vain
+   sinulla.
 
-**Todenna:** Pyydä agenttia (Agent-tilassa) ajamaan `rm -rf /tmp/testi` → eston
-pitää tulla hookilta, ei mallin harkinnasta. Pyydä sitten pieni muokkaus
-johonkin tiedostoon rumalla formatoinnilla → Prettier siistii jäljen.
+**Todenna:** Pyydä agenttia ajamaan `rm -rf /tmp/testi`. Eston pitää tulla
+hookilta, ei mallin harkinnasta. Pyydä sitten pieni muokkaus johonkin
+tiedostoon rumalla formatoinnilla: Prettier siistii jäljen. Avaa uusi sessio
+ja tarkista, että globaali hooki kirjasi sen.
+
+**Pikatehtävä:** Toteuta PRD:n pientehtävä **P3** (`GET /api/versio`). Seuraa
+hookien toimintaa työn aikana.
 
 **Pohdittavaa:** Mitkä `copilot-instructions.md`:n säännöistä ovat oikeasti
-toiveita, jotka kuuluisivat hookiksi? Entä mitä hookin EI kannata tehdä
-(kesto, kohina, väärät positiiviset)?
+toiveita, jotka kuuluisivat hookiksi? Mitä hookin EI kannata tehdä (kesto,
+kohina, väärät estot)? Miten takaisit Suunnittelijan tasks/-rajauksen hookilla?
 
 ---
 
-## Harjoitus 4 — Skilli: aja-testit (25 min)
+## Harjoitus 4 - Skilli: aja-testit (25 min)
 
-**Tavoite:** Deterministinen skilli, joka ajaa testit ja palauttaa tuloksen
-koneluettavana — agentti ei enää _tulkitse_ testitulostetta, se _lukee_ sen.
+**Tavoite:** Skilli niputtaa toistuvan työvaiheen: täsmälleen oikean komennon
+ja ohjeet tuloksen käsittelyyn. Agentti ei keksi komentoa itse, vaan ajaa
+skillin skriptin ja analysoi tuloksen joka kerta samalla tavalla.
 
 **Dokumentaatio:** <https://code.visualstudio.com/docs/agent-customization/agent-skills>
 
-**Rakenna**
+**Vaiheet**
 
-1. Luo `.github/skills/aja-testit/SKILL.md` + skripti (Copilot generoi:
-   anna dokumentaatiolinkki ja kerro tavoite).
-2. Skripti ajaa `npx vitest run --reporter=json` ja tiivistää stdoutiin:
-   `{ "lapaisi": n, "epaonnistui": n, "epaonnistumiset": [{ "testi": "...", "syy": "..." }] }`.
-3. Frontmatter-päätökset: `name`, `description` (milloin agentin kannattaa
-   käyttää tätä itse?), tarvitaanko `disable-model-invocation`?
+1. Luo kansio `.github/skills/aja-testit/` ja siihen `SKILL.md` sekä
+   `scripts/run-tests.sh`. Anna dokumentaatiolinkki Copilotille ja pyydä runko.
+2. Skripti ajaa `npx vitest run --reporter=json` ja tulostaa tiiviin
+   yhteenvedon: läpäisseet, epäonnistuneet ja epäonnistumisten virheviestit.
+3. `SKILL.md`:n ohjeosa kertoo, mitä tuloksella tehdään: kun testi on rikki,
+   tee juurisyyanalyysi. Lue epäonnistunut testi ja testattava koodi, kerro
+   miksi testi hajosi ja ehdota korjaus. Älä korjaa ilman lupaa.
+4. Päätä frontmatter: `name`, `description` (milloin agentin kannattaa ladata
+   tämä itse) ja tarvitaanko `disable-model-invocation`.
 
-**Todenna:** Aja `/aja-testit` chatissa. Riko sitten tahallaan yksi testi
-(muuta odotusarvoa testitiedostossa), aja skilli uudelleen → raportin pitää
-nimetä täsmälleen rikkoutunut testi. Palauta muutos.
+**Todenna:** Aja `/aja-testit` chatissa: raportti vihreä. Riko sitten yksi
+testi tahallaan (muuta odotusarvoa testitiedostossa) ja aja `/aja-testit`
+uudelleen: skilli nimeää rikkinäisen testin, kertoo juurisyyn ja ehdottaa
+korjauksen. Palauta muutos.
+
+**Pikatehtävä:** Toteuta PRD:n pientehtävä **P4** (kasvinsuojeluaineet
+aakkosjärjestykseen + testi). Päätä työ ajamalla `/aja-testit`.
 
 **Pohdittavaa:** Sama asia kolmella mekanismilla: ohje ("aja testit aina"),
 hooki (testit ajetaan joka muokkauksen jälkeen) ja skilli (agentti ajaa
-halutessaan). Milloin mikäkin on oikea valinta?
+tarvittaessa). Milloin mikäkin on oikea valinta?
 
 ---
 
-## Harjoitus 5 — MCP: Playwright (20 min)
+## Harjoitus 5 - MCP (20 min)
 
 **Tavoite:** Kytke ensimmäinen MCP-palvelin ja anna agentin todentaa sovellus
 oikeassa selaimessa.
@@ -171,70 +208,109 @@ oikeassa selaimessa.
 **Dokumentaatio:** <https://code.visualstudio.com/docs/agent-customization/mcp-servers>
 ja <https://github.com/microsoft/playwright-mcp>
 
-**Rakenna**
+**Vaiheet**
 
-1. Luo `.vscode/mcp.json`, jossa Playwright MCP stdio-palvelimena
-   (`npx @playwright/mcp@latest`). Copilot generoi rungon dokumentaatiolinkistä.
-2. Käynnistä palvelin VS Codessa ja tarkista työkalulistasta, mitä työkaluja
-   ilmestyi (Configure Tools).
-3. Pidä `npm run dev` käynnissä ja pyydä agenttia: _"Avaa http://localhost:3000,
+1. MCP-palvelimia löytyy kuratoidusta rekisteristä <https://github.com/mcp>
+   ja VS Coden Extensions-näkymästä haulla `@mcp`. Selaa hetki: mikä näistä
+   palvelisi omaa tiimiäsi oikeasti?
+2. Tässä harjoituksessa käytetään Playwrightia. Luo `.vscode/mcp.json`:
+
+   ```json
+   {
+     "servers": {
+       "playwright": {
+         "type": "stdio",
+         "command": "npx",
+         "args": ["@playwright/mcp@latest"]
+       }
+     }
+   }
+   ```
+
+3. Käynnistä palvelin: `mcp.json`-tiedostossa näkyy Start-painike palvelimen
+   kohdalla (tai komentopaletista **MCP: List Servers**). Tarkista chatin
+   Configure Tools -valikosta, mitä työkaluja ilmestyi.
+4. Pidä `npm run dev` käynnissä ja pyydä agenttia: "Avaa http://localhost:3000,
    valitse Rantapelto ja raportoi sen ravinnetilanne ja aikaisin sallittu
-   korjuupäivä. Vertaa lukuja API-vastaukseen ja kerro täsmäävätkö ne."_
+   korjuupäivä. Vertaa lukuja /api/lohkot/rantapelto-vastaukseen."
 
-**Todenna:** Agentin raportoimat luvut täsmäävät käyttöliittymään
-(N 80/120, P 12/15, K 32/60, korjuu 2026-07-07).
+**Todenna:** Luvut täsmäävät: N 80/120, P 12/15, K 32/60, korjuu 2026-07-07.
 
-**Pohdittavaa:** MCP-palvelin tuo agentille uusia kykyjä — ja uuden
-hyökkäyspinnan. Miten rajaat työkalut agenttikohtaisesti
-(`tools: ['playwright/*']`)? Mitä muita MCP-palvelimia tämä tiimi oikeasti
-hyötyisi? (esim. Context7 kirjastodokumentaatioon.)
+**Pikatehtävä:** Toteuta PRD:n pientehtävä **P5** (yläpalkkiin lohkojen
+yhteispinta-ala) ja pyydä agenttia todentamaan selaimessa: 14.5 ha.
+
+**Pohdittavaa:** MCP tuo agentille kykyjä ja samalla uutta hyökkäyspintaa.
+Miten rajaat työkalut agenttikohtaisesti (`tools: ['playwright/*']`)? Mitä
+rekisterin palvelimista ottaisit oikeasti käyttöön ja millä perusteella?
 
 ---
 
-## Harjoitus 6 — Päätösharjoitus: Toteuttaja ja orkestrointi (45 min)
+## Harjoitus 6 - Toteuttaja ja koko ketju (45 min)
 
-**Tavoite:** Rakenna _Toteuttaja_-agentti ja anna koko valjaikon tehdä oikeaa
-työtä: **F1 — Sadonkorjuun kirjaus** suunnitelmasta selaindemoon. Tässä
-harjoituksessa kaikki aiemmin rakennettu lyö kättä.
+**Tavoite:** Rakenna Toteuttaja ja aja koko ketju Tutki -> Suunnittele ->
+Toteuta -> Todenna ominaisuudelle **F1 - Sadonkorjuun kirjaus**. Kaikki
+aiemmin rakennettu on nyt käytössä.
 
 **Dokumentaatio:** <https://code.visualstudio.com/docs/agents/subagents>
 
-**Rakenna**
+**Vaiheet**
 
-1. `.github/agents/toteuttaja.agent.md`:
-   - `tools`: nyt myös `edit` ja `terminal` — sekä `playwright/*`.
-   - `agents: ['Tutkija']` — taustaselvitykset delegoidaan subagentille, jotta
-     toteuttajan konteksti pysyy puhtaana.
-   - `model`: toteutus on suorittavaa työtä — kelpaako edullisempi malli?
-     Kirjaa perustelu.
-   - Protokolla: TDD (testi ensin, sitten toteutus), aja `/aja-testit` ennen
-     valmiiksi julistamista, pysähdy hyväksyntään ennen uusia tiedostoja.
-2. Aja työnkulku:
-   - **a)** Suunnittelijan tiketti F1:stä (harjoituksesta 2) → **b)** lue ja
-     korjaa tiketti itse (sinä olet portti) → **c)** anna tiketti Toteuttajalle
-     ja seuraa: hookkisi valvovat, skillisi todentaa → **d)** lopuksi pyydä
-     Toteuttajaa näyttämään Playwrightilla, että sato näkyy aikajanalla.
+1. Rakenna `.github/agents/toteuttaja.agent.md` (`/create-agent` tai
+   dokumentaatiolinkki):
+   - `tools`: read, search, edit, terminal sekä `playwright/*`
+   - `agents: ['Tutkija']`: Toteuttaja delegoi taustaselvitykset subagentille,
+     jolloin sen oma konteksti pysyy puhtaana
+   - `model`: toteutus on suorittavaa työtä. Riittääkö edullisempi malli?
+   - Protokolla: TDD eli testi ensin, sitten toteutus. Aja `/aja-testit` ennen
+     valmiiksi julistamista. Pysähdy hyväksyntään ennen uusia riippuvuuksia.
+2. **Tutki:** Pyydä Tutkijalta perusteellinen selvitys: "Miten toimenpiteet on
+   toteutettu ja mitä F1 (sadonkorjuu) koskettaa?" Tutkija ei kirjoita
+   tiedostoja, joten tallenna raportti itse tiedostoon `tasks/f1-tutkimus.md`.
+3. **Suunnittele:** Anna raportti ja PRD:n F1 Suunnittelijalle. Tiketti syntyy
+   tiedostoon `tasks/f1.md`. Lue ja korjaa tiketti itse. Sinä olet portti.
+4. **Toteuta:** Anna tiketti Toteuttajalle (`#file tasks/f1.md`). Seuraa
+   työtä: hookit valvovat, `/aja-testit` todentaa.
+5. **Todenna:** Pyydä Toteuttajaa näyttämään Playwrightilla, että sato näkyy
+   aikajanalla ja että varoaikasääntö estää liian aikaisen kirjauksen
+   (`VAROAIKA_VOIMASSA`).
 
-**Todenna:** Kaikki testit vihreät uudet mukaan lukien; varoaikasääntö
-(`VAROAIKA_VOIMASSA`) toimii; UI näyttää sadonkorjuun. Ja: tarkista hookiesi
-lokeista/käyttäytymisestä, että ne todella laukesivat matkalla.
+**Todenna:** Kaikki testit vihreät, uudet mukaan lukien. Hookit laukesivat
+matkalla.
 
-**Pohdittavaa:** Avaa kunkin roolin kontekstiprofiili: mitä Suunnittelija,
-Tutkija ja Toteuttaja kukin lukivat ja tuottivat? Missä kohdin ihminen oli
-portti — oliko portteja liikaa vai liian vähän? Mitä siirtäisit ohjeista
-hookeiksi seuraavaan projektiin?
+**Pohdittavaa:** Mitä kukin rooli luki ja tuotti? Missä ihminen oli portti,
+liikaa vai liian vähän? Mitä siirtäisit ohjeista hookeiksi seuraavassa
+projektissa?
 
 ---
 
-## Extrat nopeille
+## Extra - Agenttitiimi ja Orkestroija
 
-- **E1 — Handoff:** Lisää Suunnittelijalle `handoffs`-frontmatter: nappi, joka
-  siirtää valmiin tiketin suoraan Toteuttajalle esitäytettynä promptina.
-- **E2 — Agenttikohtainen hooki:** Audit-loki vain Toteuttajalle: jokainen
-  työkalukutsu riviksi `toteuttaja-audit.log`-tiedostoon (`hooks`-kenttä
-  agentin frontmatterissa; vaatii asetuksen `chat.useCustomAgentHooks`).
-- **E3 — Toinen ominaisuus:** F2, F3 tai F4 koko putkella — tällä kertaa
-  vähemmällä käsiohjauksella. Mittaa: montako korjauskierrosta tarvittiin?
-- **E4 — Subagenttiviuhka:** Lähetä kaksi Tutkijaa rinnakkain vertailemaan
-  kahta toteutustapaa F4:n CSV-viennille ja anna Suunnittelijan syntetisoida
-  suositus raporteista.
+**Tavoite:** Koko ketju agenttien välisenä delegointina. Orkestroija ohjaa
+subagentteja: Tutkija, Suunnittelija, Toteuttaja ja Testaaja.
+
+**Vaiheet**
+
+1. Rakenna **Testaaja**: agentti, joka ajaa `/aja-testit`, tekee
+   juurisyyanalyysin ja raportoi. Saa muokata vain `tests/`-kansiota.
+2. Rakenna **Orkestroija**:
+   - `tools`: vain read ja subagenttien kutsu. Ei editiä, ei terminaalia:
+     Orkestroija ei tee työtä itse.
+   - `agents: ['Tutkija', 'Suunnittelija', 'Toteuttaja', 'Testaaja']`
+   - Protokolla: Tutki -> Suunnittele -> näytä tiketti käyttäjälle ja pyydä
+     hyväksyntä -> Toteuta -> Testaa -> raportoi lopputulos.
+3. Säädä mallit rooleittain: ajattelu vahvalla mallilla, suoritus edullisella.
+4. Aja koko ketju yhdellä promptilla ominaisuudelle **F2** (muistiinpanot)
+   tai **F3** (ravinnerajan ohitus).
+
+**Todenna:** Ominaisuus valmis, testit vihreät, ja koko ketju kulki yhden
+promptin kautta hyväksyntäpisteineen.
+
+**Pohdittavaa:** Milloin orkestrointi kannattaa ja milloin suora agentti
+riittää? Mihin kohtiin hyväksyntäpisteet kuuluvat?
+
+**Pienet lisäextrat:**
+
+- Handoff: Suunnittelijalle `handoffs`-kenttä, josta tiketti siirtyy nappia
+  painamalla Toteuttajalle.
+- Agenttikohtainen hooki: audit-loki vain Toteuttajalle (`hooks`-kenttä
+  agenttimäärityksessä, vaatii asetuksen `chat.useCustomAgentHooks`).

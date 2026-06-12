@@ -1,16 +1,17 @@
-# Lohkokirja — GitHub Copilot -harnessharjoitusten alusta
+# Lohkokirja - GitHub Copilot -harjoitusten alusta
 
 Lohkokirja on pieni, valmis viljelytoimenpiteiden kirjanpito: lohkot, satovuodet
 ja toimenpideaikajana (kylvö, lannoitus, ruiskutus) kahdella oikealla
-agronomisella säännöllä — N/P/K-ravinnerajat ja ruiskutusten varoajoista
+agronomisella säännöllä: N/P/K-ravinnerajat ja ruiskutusten varoajoista
 johdettu aikaisin sallittu korjuupäivä.
 
-Tämä repo on **harjoitusalusta**: sovellus on tarkoituksella valmis, vihreä ja
-jäädytetty, jotta tokenit ja huomio menevät olennaiseen — **Copilot-harnessin
-rakentamiseen** sen ympärille. Harjoitukset ovat tiedostossa
-[EXERCISES.md](EXERCISES.md) ja niiden raaka-aine tiedostossa [PRD.md](PRD.md).
+Repo on harjoitusalusta. Sovelluskoodi on valmis ja vihreä pohja, jotta aika ja
+tokenit menevät olennaiseen: **Copilot-valjaiden** (ohjeet, agentit, hookit,
+skillit, MCP) rakentamiseen sen ympärille. Sovellusta laajennetaan harjoitusten
+lomassa [PRD.md](PRD.md):n tehtävillä. Harjoitukset ovat tiedostossa
+[EXERCISES.md](EXERCISES.md).
 
-> Kaikki rajat, tuotteet ja varoajat ovat kuvitteellisia harjoitusarvoja —
+> Kaikki rajat, tuotteet ja varoajat ovat kuvitteellisia harjoitusarvoja,
 > eivät viljelyohjeita.
 
 ## Pikastartti
@@ -44,18 +45,19 @@ src/
   routes/         Express-reitit (vain HTTP)
 public/           Vanilla JS -käyttöliittymä, ei build-vaihetta
 tests/            Vitest: unit + integration (supertest)
-.github/          Valmis harnessin alku — katso alla
+.github/          Valmiit valjaiden osat, katso alla
 ```
 
 ## Mitä on valmiina, mitä rakennat itse
 
-| Valmiina repossa                                                        | Rakennat harjoituksissa                                    |
-| ----------------------------------------------------------------------- | ---------------------------------------------------------- |
-| `.github/copilot-instructions.md` — repo-laajuiset ohjeet               | `testing.instructions.md`, `frontend.instructions.md`      |
-| `.github/instructions/backend.instructions.md` — rajattu malliesimerkki | `suunnittelija.agent.md`, `toteuttaja.agent.md`            |
-| `.github/agents/tutkija.agent.md` — valmis tutkimusagentti              | `.github/hooks/` — portinvartija ja laatuautomaatio        |
-| Sovellus + 33 vihreää testiä + lint                                     | `.github/skills/aja-testit/` — deterministinen testiskilli |
-| `PRD.md` — neljä toteuttamatonta ominaisuutta                           | `.vscode/mcp.json` — Playwright MCP                        |
+| Valmiina repossa                                                       | Rakennat harjoituksissa                                                    |
+| ---------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `.github/copilot-instructions.md`: repo-laajuiset ohjeet               | `testing.instructions.md`, `frontend.instructions.md`                      |
+| `.github/instructions/backend.instructions.md`: rajattu malliesimerkki | Agentit: Suunnittelija, Toteuttaja (extrassa myös Testaaja ja Orkestroija) |
+| `.github/agents/tutkija.agent.md`: valmis tutkimusagentti              | `.github/hooks/`: portinvartija ja laatuautomaatio                         |
+| `.github/agents/rasmus.agent.md`: kouluttajan avatar, apuri            | `.github/skills/aja-testit/`: testiskilli                                  |
+| Sovellus + 33 vihreää testiä + lint                                    | `.vscode/mcp.json`: Playwright MCP                                         |
+| `PRD.md`: pientehtävät P1-P5 ja ominaisuudet F1-F4                     | `tasks/`: Suunnittelijan tiketit                                           |
 
 ## API lyhyesti
 
@@ -69,6 +71,6 @@ tests/            Vitest: unit + integration (supertest)
 | `GET /api/lohkot/:id/ravinnetilanne?vuosi=2026`   | N/P/K käytetty vs. rajat                     |
 | `GET /api/kasvit`, `GET /api/kasvinsuojeluaineet` | Katalogit                                    |
 
-Virheet palautuvat aina muodossa `{ "error": { "code", "message", "details" } }` —
-domain-virhekoodit (esim. `RAVINNERAJA_YLITTYY`, `BBCH_RAJA_YLITETTY`) ovat
+Virheet palautuvat aina muodossa `{ "error": { "code", "message", "details" } }`.
+Domain-virhekoodit (esim. `RAVINNERAJA_YLITTYY`, `BBCH_RAJA_YLITETTY`) ovat
 vakaita ja testattuja.

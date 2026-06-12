@@ -1,24 +1,40 @@
-# Lohkokirja — tuotebacklog
+# Lohkokirja - tuotebacklog
 
-Neljä ominaisuutta, joita demotila odottaa. Ne ovat harjoitusten raaka-ainetta:
-**agenttisi** suunnittelevat ne, **harnessisi** pitää toteutuksen rehellisenä.
-Jokainen on mitoitettu yhteen fokusoituun agenttisessioon.
+Backlog on harjoitusten raaka-ainetta: agenttisi suunnittelevat tehtävät ja
+valjaasi pitävät toteutuksen rehellisenä. Backlogissa on kahta kokoa:
 
-Hyväksymiskriteerit käyttävät samaa Oletetaan / Kun / Niin -muotoa kuin
-tuotetiimi. Ne eivät tarkoituksella ole tyhjentäviä — reunatapausten löytäminen
-on osa suunnittelutyötä.
+- **Pientehtävät (P1-P5):** noin 10 minuutin laajennuksia, yksi per harjoitus.
+  Niillä rakentamasi valjaiden osa pääsee heti töihin.
+- **Ominaisuudet (F1-F4):** kokonaisia ominaisuuksia, mitoitettu yhteen
+  fokusoituun agenttisessioon. F1 on harjoituksen 6 päätehtävä.
+
+Hyväksymiskriteerit käyttävät Oletetaan / Kun / Niin -muotoa. Ne eivät
+tarkoituksella ole tyhjentäviä: reunatapausten löytäminen on osa
+suunnittelutyötä.
 
 ---
 
-## F1 — Sadonkorjuun kirjaus
+## Pientehtävät
+
+| Tunnus | Tehtävä                                                                                                                                    | Alue     |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------ | -------- |
+| **P1** | Lohkokortit näyttävät kasvin nimen (Ohra), eivät koodia (ohra). Nimi tulee `/api/kasvit`-vastauksesta.                                     | frontend |
+| **P2** | `GET /api/lohkot/:id/toimenpiteet` tukee `?tyyppi=`-suodatusta (esim. `?tyyppi=lannoitus`). Tuntematon tyyppi palauttaa 400. Lisää testit. | backend  |
+| **P3** | `GET /api/versio` palauttaa `{ "versio": "0.1.0" }` package.jsonista. Lisää testi.                                                         | backend  |
+| **P4** | `GET /api/kasvinsuojeluaineet` palauttaa aineet aakkosjärjestyksessä. Lisää testi.                                                         | backend  |
+| **P5** | Sivun yläpalkki näyttää lohkojen yhteispinta-alan (14.5 ha).                                                                               | frontend |
+
+---
+
+## F1 - Sadonkorjuun kirjaus
 
 Kirjaa, mitä lohkolta tuli, ja laske sato.
 
 - Uusi toimenpidetyyppi `sadonkorjuu`: `pvm`, `maaraKg`, valinnainen
-  `kuivaAinePct` (0–100), valinnainen `hehtolitrapainoKg`.
+  `kuivaAinePct` (0-100), valinnainen `hehtolitrapainoKg`.
 - API laskee ja tallentaa kentän `satoKgPerHa` (= `maaraKg` / lohkon pinta-ala).
 - Sadonkorjuuta **ei saa kirjata ennen lohkon aikaisinta sallittua korjuupäivää**
-  (varoaikasääntö) — se on 422 vakaalla virhekoodilla.
+  (varoaikasääntö). Se on 422 vakaalla virhekoodilla.
 - Sadonkorjuut näkyvät käyttöliittymän aikajanalla.
 
 ```gherkin
@@ -37,12 +53,12 @@ Ominaisuus: Kirjaa sadonkorjuu
     Niin API vastaa 422 ja virhekoodilla VAROAIKA_VOIMASSA
 ```
 
-## F2 — Lohkomuistiinpanot
+## F2 - Lohkomuistiinpanot
 
 Mikä tahansa muistamisen arvoinen havainto, sidottuna lohkoon, valinnaisesti
 paikannettuna.
 
-- Uusi resurssi: `POST/GET /api/lohkot/:id/muistiinpanot` — `pvm`, `teksti`,
+- Uusi resurssi: `POST/GET /api/lohkot/:id/muistiinpanot`: `pvm`, `teksti`,
   valinnainen `sijainti { lat, lng }`, valinnainen `kuvaPolku`.
 - Muistiinpanot ovat satovuosikohtaisia, kuten toimenpiteet.
 - Muistiinpanot näkyvät aikajanalla visuaalisesti toimenpiteistä erottuen.
@@ -57,10 +73,10 @@ Ominaisuus: Lohkomuistiinpanot
     Ja se näkyy aikajanalla muistiinpanoksi merkittynä
 ```
 
-## F3 — Ravinnerajan ohitus
+## F3 - Ravinnerajan ohitus
 
 Nykyisin rajan ylittävä levitys hylätään suoraan. Agronomia joskus perustelee
-ylityksen — jäljitettävästi.
+ylityksen, kunhan siitä jää jälki.
 
 - Lannoituksen syöte voi sisältää kentän `ohitus: { perustelu: string }`
   (perustelu pakollinen, ei-tyhjä).
@@ -84,13 +100,13 @@ Ominaisuus: Ohita ravinneraja
     Niin API vastaa 400
 ```
 
-## F4 — Vaatimustenmukaisuusraportin vienti
+## F4 - Vaatimustenmukaisuusraportin vienti
 
 Kauden hiljainen päätösvaihe: kirjaukset rekisterille.
 
 - `GET /api/lohkot/:id/raportti?vuosi=` palauttaa vaatimustenmukaisuusraportin:
   lohkon tiedot, kasvi ja kaikki **raportoitavat** toimenpiteet (lannoitus,
-  ruiskutus, sadonkorjuu — ei kylvö, ei muistiinpanot) rekisterin tarvitsemine
+  ruiskutus, sadonkorjuu; ei kylvö, ei muistiinpanot) rekisterin tarvitsemine
   tietoineen.
 - Raportti sisältää yhteenvedot: käytetyt ravinteet rajoja vasten ja sovellettu
   aikaisin sallittu korjuupäivä.

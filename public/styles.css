@@ -1,16 +1,22 @@
 :root {
   --bg: #f6f5f0;
+  --bg-soft: #fbfaf7;
   --surface: #ffffff;
   --ink: #1d2a22;
   --ink-soft: #45554c;
   --ink-faint: #74837a;
   --line: #e4e1d7;
   --green: #2f6b43;
+  --green-deep: #1f4d30;
   --green-soft: #e8f0e9;
   --amber: #b9821f;
   --amber-soft: #f7eed9;
   --clay: #a8543a;
   --clay-soft: #f5e5df;
+  --sky: #2b6286;
+  --sky-soft: #e3eef4;
+  --radius: 12px;
+  --shadow: 0 1px 2px rgba(31, 42, 34, 0.05), 0 4px 14px rgba(31, 42, 34, 0.06);
 }
 
 * {
@@ -22,27 +28,65 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   background: var(--bg);
   color: var(--ink);
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
-header,
-footer {
-  padding: 18px 28px;
-}
+/* ---------- Masthead ---------- */
 
-header {
+.masthead {
+  background:
+    radial-gradient(800px 300px at 85% -20%, rgba(43, 98, 134, 0.1), transparent 60%),
+    radial-gradient(700px 280px at 5% 0%, rgba(47, 107, 67, 0.12), transparent 55%),
+    linear-gradient(180deg, var(--bg-soft), #f1efe7);
   border-bottom: 1px solid var(--line);
-  background: var(--surface);
 }
 
-header h1 {
+.masthead-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.masthead h1 {
   margin: 0;
-  font-size: 24px;
+  font-size: 30px;
+  letter-spacing: -0.01em;
+  color: var(--green-deep);
 }
 
-header p {
+.lede {
   margin: 4px 0 0;
-  font-size: 13px;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--green-deep);
+  background: var(--green-soft);
+  border: 1px solid #cfe1d2;
+  padding: 5px 12px;
+  border-radius: 999px;
+}
+
+.chip-soft {
+  background: var(--bg-soft);
+  border-color: var(--line);
+  color: var(--ink-faint);
 }
 
 .muted {
@@ -50,9 +94,11 @@ header p {
   font-weight: normal;
 }
 
+/* ---------- Layout ---------- */
+
 main {
   display: grid;
-  grid-template-columns: 240px 1fr;
+  grid-template-columns: 260px 1fr;
   gap: 24px;
   max-width: 1080px;
   margin: 0 auto;
@@ -64,6 +110,8 @@ section h2 {
   margin-top: 0;
 }
 
+/* ---------- Lohkolista ---------- */
+
 #field-list {
   list-style: none;
   margin: 0;
@@ -73,14 +121,19 @@ section h2 {
 #field-list li {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 10px 14px;
-  margin-bottom: 8px;
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  margin-bottom: 10px;
   cursor: pointer;
+  box-shadow: var(--shadow);
+  transition:
+    transform 0.12s ease,
+    border-color 0.12s ease;
 }
 
 #field-list li:hover {
   border-color: var(--green);
+  transform: translateY(-1px);
 }
 
 #field-list li.active {
@@ -88,78 +141,130 @@ section h2 {
   background: var(--green-soft);
 }
 
+#field-list .field-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 650;
+}
+
+#field-list .badge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+
+#field-list li.active .badge {
+  background: var(--surface);
+}
+
 #field-list .area {
-  font-size: 12px;
+  font-size: 12.5px;
   color: var(--ink-faint);
+  margin-top: 2px;
+}
+
+/* ---------- Paneelit ---------- */
+
+.detail-head h2 {
+  margin-bottom: 2px;
+}
+
+.detail-head p {
+  margin: 0 0 14px;
+  font-size: 14px;
 }
 
 .panel {
   background: var(--surface);
   border: 1px solid var(--line);
-  border-radius: 10px;
-  padding: 16px 20px;
+  border-radius: var(--radius);
+  padding: 18px 22px;
   margin-bottom: 18px;
+  box-shadow: var(--shadow);
 }
 
 .panel h3 {
-  margin: 0 0 12px;
+  margin: 0 0 14px;
   font-size: 15px;
 }
 
+/* ---------- Ravinnepalkit ---------- */
+
 .bar-row {
   display: grid;
-  grid-template-columns: 24px 1fr 120px;
-  gap: 10px;
+  grid-template-columns: 26px 1fr 130px;
+  gap: 12px;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   font-size: 13px;
 }
 
 .bar {
-  height: 12px;
+  height: 14px;
   background: var(--bg);
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: 7px;
   overflow: hidden;
 }
 
 .bar > span {
   display: block;
   height: 100%;
-  background: var(--green);
+  background: linear-gradient(90deg, var(--green), #4d8a62);
+  border-radius: 7px 0 0 7px;
 }
 
 .bar > span.warn {
-  background: var(--amber);
+  background: linear-gradient(90deg, var(--amber), #d09b3a);
 }
 
 .note {
-  margin: 10px 0 0;
+  margin: 12px 0 0;
   font-size: 13px;
-  color: var(--ink-soft);
+  color: #6b4e16;
   background: var(--amber-soft);
-  border-radius: 6px;
-  padding: 8px 12px;
+  border: 1px solid #ecd9ac;
+  border-radius: 8px;
+  padding: 9px 13px;
 }
 
+/* ---------- Aikajana ---------- */
+
 #timeline {
+  list-style: none;
   margin: 0;
-  padding-left: 20px;
+  padding: 0;
 }
 
 #timeline li {
-  margin-bottom: 8px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 9px 0;
   font-size: 14px;
+  border-bottom: 1px solid var(--bg);
+}
+
+#timeline li:last-child {
+  border-bottom: none;
 }
 
 #timeline .tag {
-  display: inline-block;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  border-radius: 4px;
-  padding: 1px 7px;
-  margin-right: 6px;
+  border-radius: 5px;
+  padding: 2px 8px;
   background: var(--green-soft);
   color: var(--green);
 }
@@ -174,9 +279,29 @@ section h2 {
   color: var(--amber);
 }
 
+#timeline .pvm {
+  flex: none;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-soft);
+  font-size: 13px;
+}
+
+/* ---------- Lomake ---------- */
+
+.form-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.form-row label {
+  flex: 1;
+  min-width: 140px;
+}
+
 form label {
   display: block;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   font-size: 13px;
   color: var(--ink-soft);
 }
@@ -185,12 +310,18 @@ form input,
 form select {
   display: block;
   width: 100%;
-  max-width: 320px;
   margin-top: 4px;
-  padding: 7px 10px;
+  padding: 8px 11px;
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: 8px;
   font: inherit;
+  background: var(--bg-soft);
+}
+
+form input:focus,
+form select:focus {
+  outline: 2px solid var(--green-soft);
+  border-color: var(--green);
 }
 
 form fieldset {
@@ -199,45 +330,37 @@ form fieldset {
   padding: 0;
 }
 
-form .row {
-  display: flex;
-  gap: 12px;
-}
-
-form .row label {
-  flex: 1;
-}
-
 form button {
-  margin-top: 6px;
-  padding: 9px 18px;
+  margin-top: 4px;
+  padding: 10px 20px;
   border: none;
-  border-radius: 8px;
+  border-radius: 9px;
   background: var(--green);
   color: #fff;
   font: inherit;
+  font-weight: 600;
   cursor: pointer;
 }
 
 form button:hover {
-  filter: brightness(1.08);
+  background: var(--green-deep);
 }
 
 #form-feedback {
   margin: 12px 0 0;
-  padding: 9px 12px;
-  border-radius: 6px;
+  padding: 9px 13px;
+  border-radius: 8px;
   font-size: 13px;
 }
 
 #form-feedback.ok {
   background: var(--green-soft);
-  color: var(--green);
+  color: var(--green-deep);
 }
 
 #form-feedback.warning {
   background: var(--amber-soft);
-  color: var(--amber);
+  color: #6b4e16;
 }
 
 #form-feedback.error {
@@ -246,6 +369,16 @@ form button:hover {
 }
 
 footer {
-  font-size: 12px;
+  border-top: 1px solid var(--line);
+  background: var(--bg-soft);
+  font-size: 12.5px;
   text-align: center;
+  padding: 20px 28px;
+  margin-top: 32px;
+}
+
+@media (max-width: 760px) {
+  main {
+    grid-template-columns: 1fr;
+  }
 }

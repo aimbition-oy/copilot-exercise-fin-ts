@@ -8,6 +8,7 @@ const TYYPPINIMET = {
 
 const state = {
   lohkot: [],
+  toimenpideMaarat: {},
   valittuId: null,
 };
 
@@ -35,20 +36,26 @@ function el(tag, props = {}, ...children) {
 function renderLohkoLista() {
   const list = $('#field-list');
   list.replaceChildren(
-    ...state.lohkot.map((lohko) =>
-      el(
+    ...state.lohkot.map((lohko) => {
+      const maara = state.toimenpideMaarat[lohko.id] ?? 0;
+      return el(
         'li',
         {
           className: lohko.id === state.valittuId ? 'active' : '',
           onclick: () => valitseLohko(lohko.id),
         },
-        el('div', { textContent: lohko.nimi }),
+        el(
+          'div',
+          { className: 'field-title' },
+          el('span', { textContent: lohko.nimi }),
+          el('span', { className: 'badge', textContent: `${maara} kirjausta` }),
+        ),
         el('div', {
           className: 'area',
-          textContent: `${lohko.pintaAlaHa} ha · ${lohko.kasvit[SATOVUOSI] ?? 'ei kasvia suunniteltu'}`,
+          textContent: `${lohko.pintaAlaHa} ha, ${lohko.kasvit[SATOVUOSI] ?? 'ei kasvia suunniteltu'}`,
         }),
-      ),
-    ),
+      );
+    }),
   );
   list.querySelectorAll('li').forEach((li, i) => {
     li.dataset.testid = 'field-item';
@@ -81,7 +88,7 @@ function kuvaileToimenpide(tp) {
     case 'lannoitus':
       return `${tp.tuote}, ${tp.maaraKgPerHa} kg/ha (N ${tp.ravinnepitoisuusPct.n} % / P ${tp.ravinnepitoisuusPct.p} % / K ${tp.ravinnepitoisuusPct.k} %)`;
     case 'ruiskutus':
-      return `${tp.tuote} asteella BBCH ${tp.bbchAste} → aikaisin korjuu ${tp.aikaisinKorjuuPvm}`;
+      return `${tp.tuote} asteella BBCH ${tp.bbchAste}, aikaisin korjuu ${tp.aikaisinKorjuuPvm}`;
     default:
       return tp.tyyppi;
   }
@@ -97,10 +104,11 @@ async function renderTiedot() {
     api(`/lohkot/${state.valittuId}?vuosi=${SATOVUOSI}`),
     api(`/lohkot/${state.valittuId}/toimenpiteet?vuosi=${SATOVUOSI}`),
   ]);
+  state.toimenpideMaarat[lohko.id] = toimenpiteet.length;
 
   $('#field-name').textContent = lohko.nimi;
   $('#field-meta').textContent =
-    `${lohko.pintaAlaHa} ha · ${lohko.ravinneTilanne?.kasvi.nimi ?? 'ei kasvia suunniteltu'} · satovuosi ${SATOVUOSI}`;
+    `${lohko.pintaAlaHa} ha, ${lohko.ravinneTilanne?.kasvi.nimi ?? 'ei kasvia suunniteltu'}, satovuosi ${SATOVUOSI}`;
 
   const bars = $('#nutrient-bars');
   if (lohko.ravinneTilanne) {
@@ -131,13 +139,16 @@ async function renderTiedot() {
           className: `tag ${tp.tyyppi}`,
           textContent: TYYPPINIMET[tp.tyyppi] ?? tp.tyyppi,
         }),
-        `${tp.pvm} — ${kuvaileToimenpide(tp)}`,
+        el('span', { className: 'pvm', textContent: tp.pvm }),
+        el('span', { textContent: kuvaileToimenpide(tp) }),
       );
       item.dataset.testid = 'timeline-item';
       return item;
     }),
   );
+  $('#timeline-empty').hidden = toimenpiteet.length > 0;
 
+  renderLohkoLista();
   detail.hidden = false;
 }
 
@@ -215,7 +226,7 @@ function initForm() {
         body: JSON.stringify(buildPayload(form)),
       });
       if (result.varoitukset.length > 0) {
-        naytaPalaute('warning', `Tallennettu varoituksin: ${result.varoitukset.join(' · ')}`);
+        naytaPalaute('warning', `Tallennettu varoituksin: ${result.varoitukset.join(' / ')}`);
       } else {
         naytaPalaute('ok', 'Toimenpide tallennettu.');
       }
@@ -236,8 +247,21 @@ async function initKatalogit() {
   );
 }
 
+async function initToimenpideMaarat() {
+  const maarat = await Promise.all(
+    state.lohkot.map((lohko) =>
+      api(`/lohkot/${lohko.id}/toimenpiteet?vuosi=${SATOVUOSI}`).then((tp) => [
+        lohko.id,
+        tp.length,
+      ]),
+    ),
+  );
+  state.toimenpideMaarat = Object.fromEntries(maarat);
+}
+
 async function init() {
   state.lohkot = await api('/lohkot');
+  await initToimenpideMaarat();
   renderLohkoLista();
   await initKatalogit();
   initForm();

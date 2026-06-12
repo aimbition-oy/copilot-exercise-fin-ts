@@ -8,18 +8,19 @@ applyTo: 'src/**/*.ts'
 
 ## Kerrostus (valvotaan katselmoinnissa, ei työkaluilla)
 
-- Reitit importtaavat servicejä; servicet importtaavat repositorioita/malleja/dataa;
-  repositoriot importtaavat vain malleja. Älä koskaan importtaa ylöspäin (service ei
-  importtaa reittiä).
-- Uudet päätepisteet: määrittele/laajenna Zod-skeema hakemistossa `src/models/`,
-  lisää sääntö serviceen, pidä reittikäsittelijä alle ~10 rivissä.
+- Reitit importtaavat servicejä; servicet importtaavat repositorioita, malleja
+  ja dataa; repositoriot importtaavat vain malleja. Älä importtaa ylöspäin
+  (service ei importtaa reittiä).
+- Uudet päätepisteet: määrittele tai laajenna Zod-skeema hakemistossa
+  `src/models/`, lisää sääntö serviceen, pidä reittikäsittelijä alle 10
+  rivissä.
 
 ## Kopioitavat mallit
 
 - Domain-säännöt heittävät, eivät palauta virheobjekteja:
 
   ```ts
-  throw new RuleViolationError('RAVINNERAJA_YLITTYY', 'viesti…', { details });
+  throw new RuleViolationError('RAVINNERAJA_YLITTYY', 'viesti', { details });
   ```
 
 - Validointi reittirajalla:
@@ -35,8 +36,8 @@ applyTo: 'src/**/*.ts'
 ## Kiellot
 
 - Ei uusia riippuvuuksia kysymättä ensin käyttäjältä.
-- Ei `console.log`-kutsuja `src/`-hakemistossa (ainoa poikkeus on palvelimen
-  käynnistysrivi `server.ts`:ssä).
-- Ei `Date.now()`- / argumentitonta `new Date()`-kutsua — demotila elää kiinteässä
-  satovuodessa (2026) ja testit nojaavat determinismiin.
-- Älä muokkaa `src/data/seed.ts`:n arvoja; testit asertoivat niitä vasten.
+- Ei `console.log`-kutsuja `src/`-hakemistossa. Ainoa poikkeus on palvelimen
+  käynnistysrivi `server.ts`:ssä.
+- Ei `Date.now()`-kutsua eikä argumentitonta `new Date()`-kutsua. Demotila
+  elää kiinteässä satovuodessa (2026) ja testit nojaavat determinismiin.
+- Älä muokkaa `src/data/seed.ts`:n arvoja. Testit asertoivat niitä vasten.
