@@ -17,7 +17,9 @@ matkaa, ja lopussa annat valjastetun agentin toteuttaa kokonaisen ominaisuuden.
    suoraan chattiin. Maalaa koodinpätkä editorissa ja kirjoita `#selection`,
    kun tarkoitat juuri sitä. Ohje:
    <https://code.visualstudio.com/docs/chat/copilot-chat-context>
-3. **Sovellus pysyy vihreänä.** `npm test` ja `npm run lint` ovat tuomareita.
+3. **Sovellus pysyy vihreänä.** `make check` (tyypit, lint, testit) on tuomari.
+   Kaikki komennot näet komennolla `make help`; `Makefile` näyttää myös niiden
+   npm-vastineet.
 4. **Apua saa.** Repossa on valmiina kaksi agenttia: `Rasmus` (kouluttajan
    avatar, tuntee dokumentaation ja harjoitukset) ja `Tutkija` (tutkii
    koodikantaa ja raportoi). Kysy niiltä ennen kuin jäät jumiin.
@@ -30,16 +32,20 @@ matkaa, ja lopussa annat valjastetun agentin toteuttaa kokonaisen ominaisuuden.
 
 **Vaiheet**
 
-1. `npm install && npm test`. Tulos: 33 testiä vihreänä.
-2. `npm run dev` ja avaa <http://localhost:3000>. Klikkaile lohkoja.
+1. `make install && make test`. Tulos: 33 testiä vihreänä.
+2. `make dev` ja avaa <http://localhost:3000>. Klikkaile lohkoja.
 3. Avaa Copilot Chat (Ctrl+Alt+I, Macissa Ctrl+Cmd+I) ja valitse **Agent**-tila.
 4. Agenttivalitsimesta löytyvät `Rasmus` ja `Tutkija`. Kysy Rasmukselta:
    "Mitä .github-kansiossa on valmiina ja mitä minä rakennan itse?"
 5. Pyydä Tutkijalta: "Selvitä normaali-syvyydellä, miten ravinnerajasääntö
    toimii ja missä se on toteutettu."
-6. Tutustu valmiisiin osiin: ohjeet (`.github/copilot-instructions.md` ja
-   `.github/instructions/backend.instructions.md`) sekä agenttimääritykset
-   (`.github/agents/`).
+6. Tutustu valmiisiin osiin: `AGENTS.md` (repo-laajuiset säännöt) ja `docs/`
+   (arkkitehtuuri, domain, rajapinta, testaus), tiedostokohtainen ohje
+   `.github/instructions/backend.instructions.md` sekä agenttimääritykset
+   `.github/agents/`. `AGENTS.md` on agenttiohjeiden standarditiedosto, jonka
+   Copilot ja muut agenttityökalut lukevat. (Pelkkä Copilot tukee myös nimeä
+   `.github/copilot-instructions.md`; tässä projektissa käytetään vain
+   `AGENTS.md`:tä, jotta sääntöjä ei kirjoiteta kahteen kertaan.)
 
 **Todenna:** Tutkija vastaa tiedostoviittauksin (esim. `ravinneService.ts`)
 eikä muokkaa mitään.
@@ -52,7 +58,8 @@ kirjoitit mitään? Mistä näet sen? (Vihje: vastauksen References-lista.)
 ## Harjoitus 1 - Ohjeet (25 min)
 
 **Tavoite:** Kaksi uutta rajattua ohjetiedostoa: testit ja frontend.
-Repo-laajuinen `copilot-instructions.md` ja backendin ohje ovat jo olemassa.
+Repo-laajuiset säännöt (`AGENTS.md`) ja backendin ohje ovat jo olemassa.
+Nyt rakennat ohjeistuksen rajatun kerroksen.
 
 **Dokumentaatio:** <https://code.visualstudio.com/docs/agent-customization/custom-instructions>
 
@@ -79,8 +86,9 @@ Repo-laajuinen `copilot-instructions.md` ja backendin ohje ovat jo olemassa.
 **Pikatehtävä:** Toteuta PRD:n pientehtävä **P1** (lohkokortit näyttävät
 kasvin nimen) Agent-tilassa. Frontend-ohjeesi ohjaa nyt työtä.
 
-**Pohdittavaa:** Mikä kuuluu `copilot-instructions.md`:hen, mikä rajattuun
-tiedostoon, mikä READMEen? Miksi väärä väite ohjeessa on pahempi kuin puuttuva?
+**Pohdittavaa:** Mikä kuuluu `AGENTS.md`:hen (aina ladattu), mikä rajattuun
+`*.instructions.md`-tiedostoon, mikä `docs/`-kansioon, mikä READMEen? Miksi
+väärä väite ohjeessa on pahempi kuin puuttuva?
 
 ---
 
@@ -114,7 +122,7 @@ ketjun keskimmäisen osan.
 (malli -> service -> reitti -> testit). Suunnittelija ei koskenut muihin
 tiedostoihin.
 
-**Pikatehtävä:** Anna tiketti oletusagentille ja toteuta **P2**. Aja `npm test`.
+**Pikatehtävä:** Anna tiketti oletusagentille ja toteuta **P2**. Aja `make test`.
 
 **Pohdittavaa:** Copilot laskuttaa mallit tokeneina: syöte-, tuloste- ja
 välimuistitokenit hinnoitellaan mallikohtaisesti, ja edullisimmat mallit
@@ -160,9 +168,9 @@ ja tarkista, että globaali hooki kirjasi sen.
 **Pikatehtävä:** Toteuta PRD:n pientehtävä **P3** (`GET /api/versio`). Seuraa
 hookien toimintaa työn aikana.
 
-**Pohdittavaa:** Mitkä `copilot-instructions.md`:n säännöistä ovat oikeasti
-toiveita, jotka kuuluisivat hookiksi? Mitä hookin EI kannata tehdä (kesto,
-kohina, väärät estot)? Miten takaisit Suunnittelijan tasks/-rajauksen hookilla?
+**Pohdittavaa:** Mitkä `AGENTS.md`:n säännöistä ovat oikeasti toiveita, jotka
+kuuluisivat hookiksi? Mitä hookin EI kannata tehdä (kesto, kohina, väärät
+estot)? Miten takaisit Suunnittelijan tasks/-rajauksen hookilla?
 
 ---
 
@@ -230,7 +238,7 @@ ja <https://github.com/microsoft/playwright-mcp>
 3. Käynnistä palvelin: `mcp.json`-tiedostossa näkyy Start-painike palvelimen
    kohdalla (tai komentopaletista **MCP: List Servers**). Tarkista chatin
    Configure Tools -valikosta, mitä työkaluja ilmestyi.
-4. Pidä `npm run dev` käynnissä ja pyydä agenttia: "Avaa http://localhost:3000,
+4. Pidä `make dev` käynnissä ja pyydä agenttia: "Avaa http://localhost:3000,
    valitse Rantapelto ja raportoi sen ravinnetilanne ja aikaisin sallittu
    korjuupäivä. Vertaa lukuja /api/lohkot/rantapelto-vastaukseen."
 
@@ -337,7 +345,7 @@ Code > Check for Updates.
 3. Halutessasi: aloita uusi sessio ja anna agentille toteutettavaksi F2, F3
    tai F4. Käytä Suunnittelijaa ja Toteuttajaa tästä näkymästä.
 4. Seuraa työtä Changes-paneelista: diffit, kommentointi (Add Feedback) ja
-   testien ajo Tasks-valikosta (`npm test`).
+   testien ajo Tasks-valikosta (`make test`).
 5. Kokeile rinnakkaisia sessioita: käynnistä toinen sessio toiselle
    tehtävälle ja vertaa, miltä monen agentin seuraaminen tuntuu.
 

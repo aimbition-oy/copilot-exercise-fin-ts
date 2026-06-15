@@ -20,25 +20,23 @@ Tarvitset Node 20:n tai uudemman (tarkista: `node --version`). nvm-käyttäjille
 repossa on `.nvmrc` (`nvm use`), muille riittää mikä tahansa tuore asennus.
 
 ```bash
-npm install
-npm test         # 33 testiä vihreänä
-npm run dev      # http://localhost:3000
+make install
+make test        # 33 testiä vihreänä
+make dev         # http://localhost:3000
 ```
 
 ## Komennot
 
-| Komento                                          | Tarkoitus                            |
-| ------------------------------------------------ | ------------------------------------ |
-| `npm run dev`                                    | Palvelin watch-tilassa portissa 3000 |
-| `npm test`                                       | Koko Vitest-testistö                 |
-| `npm run test:unit` / `npm run test:integration` | Yksi testistö kerrallaan             |
-| `npm run typecheck`                              | TypeScript-tyypitys (`tsc --noEmit`) |
-| `npm run lint` / `npm run lint:fix`              | ESLint                               |
-| `npm run format` / `npm run format:check`        | Prettier                             |
+Kaikki komennot ovat `Makefile`ssa. Aja `make help` nähdäksesi ne. Makefile
+näyttää myös kunkin komennon taustalla ajettavan npm-komennon, joten voit ajaa
+sen suoraan, jos `make` ei ole asennettuna.
 
 ## Rakenne
 
 ```
+AGENTS.md         Repo-laajuiset säännöt (ainoa totuuden lähde)
+Makefile          Kaikki komennot (make help)
+docs/             Arkkitehtuuri, domain, rajapinta ja testaus
 src/
   models/         Zod-skeemat ja tyypit (lohko, toimenpide)
   data/           Katalogit (kasvit, kasvinsuojeluaineet) ja demotilan seed
@@ -50,11 +48,19 @@ tests/            Vitest: unit + integration (supertest)
 .github/          Valmiit valjaiden osat, katso alla
 ```
 
+## Dokumentaatio
+
+- [AGENTS.md](AGENTS.md) - repo-laajuiset säännöt, jotka pätevät kaikkialla
+- [docs/architecture.md](docs/architecture.md) - kerrokset, pyynnön kulku, tiedostokartta
+- [docs/domain.md](docs/domain.md) - domain-käsitteet ja mistä arvot löytyvät
+- [docs/api.md](docs/api.md) - HTTP-rajapinta ja virhekoodit
+- [docs/testing.md](docs/testing.md) - testien rakenne ja ajaminen
+
 ## Mitä on valmiina, mitä rakennat itse
 
 | Valmiina repossa                                                       | Rakennat harjoituksissa                                                    |
 | ---------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| `.github/copilot-instructions.md`: repo-laajuiset ohjeet               | `testing.instructions.md`, `frontend.instructions.md`                      |
+| `AGENTS.md` + `docs/`: repo-laajuiset säännöt ja dokumentaatio         | `testing.instructions.md`, `frontend.instructions.md`                      |
 | `.github/instructions/backend.instructions.md`: rajattu malliesimerkki | Agentit: Suunnittelija, Toteuttaja (extrassa myös Testaaja ja Orkestroija) |
 | `.github/agents/tutkija.agent.md`: valmis tutkimusagentti              | `.github/hooks/`: portinvartija ja laatuautomaatio                         |
 | `.github/agents/rasmus.agent.md`: kouluttajan avatar, apuri            | `.github/skills/aja-testit/`: testiskilli                                  |

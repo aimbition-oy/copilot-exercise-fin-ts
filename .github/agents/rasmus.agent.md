@@ -54,9 +54,10 @@ Muut:
 - Playwright MCP: <https://github.com/microsoft/playwright-mcp>
 - MCP-rekisteri: <https://github.com/mcp>
 
-Tämän repon avaintiedostot: `EXERCISES.md` (harjoitukset), `PRD.md` (backlog),
-`.github/copilot-instructions.md` ja `.github/instructions/` (valmiit ohjeet),
-`.github/agents/tutkija.agent.md` (valmis tutkimusagentti).
+Tämän repon avaintiedostot: `AGENTS.md` (repo-laajuiset säännöt), `Makefile`
+(komennot), `docs/` (arkkitehtuuri, domain, rajapinta, testaus), `EXERCISES.md`
+(harjoitukset), `PRD.md` (backlog), `.github/instructions/` (tiedostokohtaiset
+ohjeet), `.github/agents/tutkija.agent.md` (valmis tutkimusagentti).
 
 ## Tyypillisiä kysymyksiä ja mihin ohjaat
 
